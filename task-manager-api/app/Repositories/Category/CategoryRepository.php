@@ -3,31 +3,32 @@
 namespace App\Repositories;
 
 use App\Models\Category;
+use App\Repositories\Contracts\Repository;
 
-class CategoryRepository implements CategoryRepositoryInterface
+class CategoryRepository implements Repository
 {
-    public function getAll(): iterable
+    public function all(): iterable
     {
         return Category::all();
     }
 
-    public function create(array $data): Category
-    {
-        return Category::create($data);
-    }
-
-    public function findById(int $id): ?Category
+    public function find(int $id)
     {
         return Category::find($id);
     }
 
-    public function update(Category $category, array $data): bool
+    public function create(array $data)
     {
-        return $category->update($data);
+        return Category::create($data);
     }
 
-    public function delete(Category $category): bool
+    public function update($entity, array $data): bool
     {
-        return $category->delete();
+        return $entity->update($data);
+    }
+
+    public function delete($entity): bool
+    {
+        return $entity->delete();
     }
 }

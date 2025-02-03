@@ -2,13 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\Task;
+use App\Repositories\Contracts\Repository;
 
-interface TaskRepositoryInterface
+interface TaskRepositoryInterface extends Repository
 {
     public function getAllByUser(int $userId, array $filters = []): iterable;
-    public function create(array $data): Task;
-    public function findById(int $id): ?Task;
-    public function update(Task $task, array $data): bool;
-    public function delete(Task $task): bool;
 }
