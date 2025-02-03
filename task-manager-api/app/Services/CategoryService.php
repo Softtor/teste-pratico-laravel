@@ -28,4 +28,14 @@ class CategoryService
     {
         return $this->categoryRepository->findById($id);
     }
+
+    public function updateCategory(Category $category, array $data): bool
+    {
+        return $this->categoryRepository->update($category, $data);
+    }
+
+    public function deleteCategory(Category $category): bool
+    {
+        return $this->categoryRepository->delete($category);
+    }
 }
