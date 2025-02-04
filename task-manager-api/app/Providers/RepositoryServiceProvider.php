@@ -2,12 +2,10 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TaskController;
-use App\Repositories\CategoryRepository;
-use App\Repositories\Contracts\Repository;
-use App\Repositories\TaskRepository;
-use App\Repositories\TaskRepositoryInterface;
+use App\Contracts\Repository;
+use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Task\TaskRepository;
+use App\Repositories\Task\TaskRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -17,13 +15,8 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->when(TaskController::class)
-            ->needs(TaskRepositoryInterface::class)
-            ->give(TaskRepository::class);
-
-        $this->app->when(CategoryController::class)
-            ->needs(Repository::class)
-            ->give(CategoryRepository::class);
+        $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
+        $this->app->bind(Repository::class, CategoryRepository::class);
     }
 
     /**

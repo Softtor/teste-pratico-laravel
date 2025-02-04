@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
 use App\Models\Task;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
@@ -52,16 +53,9 @@ class TaskController extends Controller
      *     @OA\Response(response=422, description="Erro de validação")
      * )
      */
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
-        $data = $request->validate([
-            'title'       => ['required', 'string', 'min:5'],
-            'description' => ['nullable', 'string'],
-            'status'      => ['required', Rule::in(['pending', 'in progress', 'done'])],
-            'category_id' => ['required', 'exists:categories,id'],
-        ]);
-
-        $task = $this->taskService->createTask($data);
+        $task = $this->taskService->createTask($request->validated());
         return response()->json($task, 201);
     }
 
@@ -115,16 +109,10 @@ class TaskController extends Controller
      *     @OA\Response(response=404, description="Tarefa não encontrada")
      * )
      */
-    public function update(Request $request, Task $task)
+    public function update(TaskRequest $request, Task $task)
     {
         $this->authorize('update', $task);
-        $data = $request->validate([
-            'title'       => ['sometimes', 'required', 'string', 'min:5'],
-            'description' => ['nullable','string'],
-            'status'      => ['sometimes', 'required', Rule::in(['pending', 'in progress', 'done'])],
-            'category_id' => ['sometimes','required','exists:categories,id'],
-        ]);
-        $this->taskService->updateTask($task, $data);
+        $this->taskService->updateTask($task, $request->validated());
         return response()->json($task);
     }
 

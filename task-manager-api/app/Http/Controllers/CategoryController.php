@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
@@ -44,13 +45,9 @@ class CategoryController extends Controller
      *     @OA\Response(response=422, description="Erro de validação")
      * )
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'unique:categories,name'],
-        ]);
-
-        $category = $this->categoryService->createCategory($data);
+        $category = $this->categoryService->createCategory($request->validated());
         return response()->json($category, 201);
     }
 
@@ -105,19 +102,15 @@ class CategoryController extends Controller
      *     @OA\Response(response=404, description="Categoria não encontrada")
      * )
      */
-    public function update(Request $request, int $id)
+    public function update(CategoryRequest $request, int $id)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'unique:categories,name,' . $id],
-        ]);
 
         $category = $this->categoryService->findCategory($id);
-
         if (!$category) {
             return response()->json(['message' => 'Categoria não encontrada'], 404);
         }
 
-        $updated = $this->categoryService->updateCategory($category, $data);
+        $updated = $this->categoryService->updateCategory($category, $request->validated());
 
         if ($updated) {
             return response()->json($category);

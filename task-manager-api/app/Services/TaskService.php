@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Repositories\TaskRepositoryInterface;
 use App\Models\Task;
+use App\Repositories\Task\TaskRepositoryInterface;
 
 class TaskService
 {

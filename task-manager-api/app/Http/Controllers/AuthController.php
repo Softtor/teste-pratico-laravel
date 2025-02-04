@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -28,27 +30,29 @@ class AuthController extends Controller
      *     @OA\Response(response=422, description="Erro de validação")
      * )
      */
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $data = $request->validate([
-            'name'     => ['required', 'string'],
-            'email'    => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
+        try {
+            $user = User::create([
+                'name'     => $request->input('name'),
+                'email'    => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+            ]);
 
-        $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+            $token = $user->createToken('api-token')->plainTextToken;
 
-        $token = $user->createToken('api-token')->plainTextToken;
-
-        return response()->json([
-            'user'  => $user,
-            'token' => $token,
-        ], 201);
+            return response()->json([
+                'user'  => $user,
+                'token' => $token,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao registrar usuário.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
+
 
 
     /**
@@ -68,20 +72,16 @@ class AuthController extends Controller
      *     @OA\Response(response=401, description="Credenciais inválidas")
      * )
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $data = $request->validate([
-            'email'    => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $user = User::where('email', $request['email'])->first();
 
-        $user = User::where('email', $data['email'])->first();
-
-        if (!$user || !Hash::check($data['password'], $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Credenciais inválidas.'],
-            ]);
+        if (!$user || !Hash::check($request['password'], $user->password)) {
+            return response()->json([
+                'message' => 'Credenciais inválidas.'
+            ], 401);
         }
+
 
         $token = $user->createToken('api-token')->plainTextToken;
 

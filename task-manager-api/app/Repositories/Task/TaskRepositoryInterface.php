@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Task;
 
-use App\Repositories\Contracts\Repository;
+use App\Contracts\Repository;
 
 interface TaskRepositoryInterface extends Repository
 {
