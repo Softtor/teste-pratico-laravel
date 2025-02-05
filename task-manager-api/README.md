@@ -83,7 +83,6 @@ docker compose exec app php artisan serve
 Acesse a aplicação em [http://localhost:8000](http://localhost:8000).
 
 
-
 ## 📝 Documentação da API (Swagger)
 A documentação da API está disponível em:
 ```
@@ -96,11 +95,10 @@ docker compose exec app php artisan l5-swagger:generate
 ```
 
 
-
 ## 🚧 Problemas Conhecidos
 - **Nginx**: O projeto atualmente não possui um servidor Nginx configurado no Docker.
   - Para rodar a aplicação, use `php artisan serve` dentro do container.
-- **Front-end**: O frontend do projeto ainda se encontra em desenvolvimento, porém o fundamento do projeto que era a api foi entregue. Uma previa do frontend do projeto pode ser obtido acessando `http://localhost:8000`.
+- **Front-end**: O frontend do projeto ainda se encontra em desenvolvimento, porém o fundamento do projeto que era a API foi entregue. Uma prévia do frontend do projeto pode ser obtida acessando `http://localhost:8000`.
 
 ## 📌 Endpoints da API
 ### 🔹 Autenticação
@@ -135,4 +133,25 @@ PUT /api/tasks/{task_id}
 DELETE /api/tasks/{task_id}
 ```
 
+
+## 🔧 Como Rodar os Testes
+Para rodar os testes da API, execute o seguinte comando dentro do container do Laravel:
+
+```bash
+docker compose exec app vendor/bin/pest
+```
+
+Para rodar apenas os testes de uma funcionalidade específica (exemplo: `TaskTest`):
+```bash
+docker compose exec app vendor/bin/pest --filter=TaskTest
+```
+
+Caso queira rodar os testes com detalhes adicionais, use a opção `--verbose`:
+```bash
+docker compose exec app vendor/bin/pest --verbose
+```
+
+Isso garante que todos os testes sejam executados dentro do ambiente correto.
+
+Se houver falhas nos testes, verifique os logs de erro e certifique-se de que as migrations e seeders foram aplicadas corretamente (`php artisan migrate --seed`).
 
