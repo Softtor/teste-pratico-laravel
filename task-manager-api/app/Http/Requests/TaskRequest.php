@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Domain\Task\Enums\TaskStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +26,7 @@ class TaskRequest extends FormRequest
         return [
             'title'       => ['required', 'string', 'min:5'],
             'description' => ['nullable', 'string'],
-            'status'      => ['required', Rule::in(['pending', 'in progress', 'done'])],
+            'status'      => ['required', Rule::in(TaskStatus::values())],
             'category_id' => ['required', 'exists:categories,id'],
         ];
     }

@@ -2,26 +2,27 @@
 
 namespace App\Services;
 
+use App\Contracts\TaskRepositoryContract;
 use App\Models\Task;
-use App\Repositories\Task\TaskRepositoryInterface;
 
 class TaskService
 {
-    protected TaskRepositoryInterface $taskRepository;
+    protected TaskRepositoryContract $repository;
 
-    public function __construct(TaskRepositoryInterface $taskRepository)
+    public function __construct(TaskRepositoryContract $taskRepository)
     {
-        $this->taskRepository = $taskRepository;
+        $this->repository = $taskRepository;
     }
 
     /**
-     * Retorna todas as tarefas.
+     * Retorna todas as tarefas com possibilidade de filtros.
      *
+     * @param array $filters
      * @return iterable
      */
-    public function getAllTasks(): iterable
+    public function getAllTasks(array $filters = []): iterable
     {
-        return $this->taskRepository->all();
+        return $this->repository->all($filters);
     }
 
     /**
@@ -32,7 +33,7 @@ class TaskService
      */
     public function getTaskById(int $id): ?Task
     {
-        return $this->taskRepository->find($id);
+        return $this->repository->find($id);
     }
 
     /**
@@ -43,7 +44,7 @@ class TaskService
      */
     public function createTask(array $data): Task
     {
-        return $this->taskRepository->create($data);
+        return $this->repository->create($data);
     }
 
     /**
@@ -55,7 +56,7 @@ class TaskService
      */
     public function updateTask(Task $task, array $data): bool
     {
-        return $this->taskRepository->update($task, $data);
+        return $this->repository->update($task, $data);
     }
 
     /**
@@ -66,18 +67,6 @@ class TaskService
      */
     public function deleteTask(Task $task): bool
     {
-        return $this->taskRepository->delete($task);
-    }
-
-    /**
-     * Retorna todas as tarefas de um usuário, com possibilidade de filtros.
-     *
-     * @param int $userId
-     * @param array $filters
-     * @return iterable
-     */
-    public function getTasksByUser(int $userId, array $filters = []): iterable
-    {
-        return $this->taskRepository->getAllByUser($userId, $filters);
+        return $this->repository->delete($task);
     }
 }

@@ -2,11 +2,15 @@
 
 namespace App\Contracts;
 
-interface Repository
+interface RepositoryContract
 {
-    public function all(): iterable;
+    public function all(array $filters = []): iterable;
+
     public function find(int $id);
+
     public function create(array $data);
+
     public function update($entity, array $data): bool;
+
     public function delete($entity): bool;
 }

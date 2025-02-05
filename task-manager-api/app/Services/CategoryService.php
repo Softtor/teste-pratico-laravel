@@ -2,34 +2,29 @@
 
 namespace App\Services;
 
-use App\Contracts\Repository;
+use App\Contracts\CategoryRepositoryContract;
+use App\Repositories\Repository;
 use App\Models\Category;
 
 class CategoryService
 {
-    /**
-     * @var Repository
-     */
-    protected Repository $categoryRepository;
+    protected CategoryRepositoryContract $repository;
 
-    /**
-     * Construtor com injeção de dependência do repositório de Category.
-     *
-     * @param Repository $categoryRepository
-     */
-    public function __construct(Repository $categoryRepository)
+    public function __construct(CategoryRepositoryContract $categoryRepository)
     {
-        $this->categoryRepository = $categoryRepository;
+        $this->repository = $categoryRepository;
     }
 
+
     /**
-     * Retorna todas as categorias.
+     * Retorna todas as categorias com possibilidade de filtros.
      *
+     * @param array $filters
      * @return iterable
      */
-    public function getAllCategories(): iterable
+    public function getAllCategories(array $filters = []): iterable
     {
-        return $this->categoryRepository->all();
+        return $this->repository->all($filters);
     }
 
     /**
@@ -40,7 +35,7 @@ class CategoryService
      */
     public function getCategoryById(int $id): ?Category
     {
-        return $this->categoryRepository->find($id);
+        return $this->repository->find($id);
     }
 
     /**
@@ -51,7 +46,7 @@ class CategoryService
      */
     public function createCategory(array $data): Category
     {
-        return $this->categoryRepository->create($data);
+        return $this->repository->create($data);
     }
 
     /**
@@ -69,7 +64,7 @@ class CategoryService
             return false;
         }
 
-        return $this->categoryRepository->update($category, $data);
+        return $this->repository->update($category, $data);
     }
 
     /**
@@ -86,6 +81,6 @@ class CategoryService
             return false;
         }
 
-        return $this->categoryRepository->delete($category);
+        return $this->repository->delete($category);
     }
 }
