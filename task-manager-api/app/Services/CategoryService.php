@@ -33,7 +33,7 @@ class CategoryService
      * @param int $id
      * @return Category|null
      */
-    public function getCategoryById(int $id): ?Category
+    public function getCategory(int $id): ?Category
     {
         return $this->repository->find($id);
     }
@@ -52,35 +52,24 @@ class CategoryService
     /**
      * Atualiza uma categoria existente.
      *
-     * @param int $id
+     * @param Category
      * @param array $data
      * @return bool
      */
-    public function updateCategory(int $id, array $data): bool
+    public function updateCategory(Category $category, array $data): bool
     {
-        $category = $this->getCategoryById($id);
-
-        if (!$category) {
-            return false;
-        }
-
-        return $this->repository->update($category, $data);
+        return tap($category)->update($data)->save();
     }
+
 
     /**
      * Remove uma categoria.
      *
-     * @param int $id
+     * @param Category
      * @return bool
      */
-    public function deleteCategory(int $id): bool
+    public function deleteCategory(Category $category): bool
     {
-        $category = $this->getCategoryById($id);
-
-        if (!$category) {
-            return false;
-        }
-
         return $this->repository->delete($category);
     }
 }

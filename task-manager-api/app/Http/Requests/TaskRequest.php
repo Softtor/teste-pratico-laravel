@@ -28,6 +28,7 @@ class TaskRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'status'      => ['required', Rule::in(TaskStatus::values())],
             'category_id' => ['required', 'exists:categories,id'],
+            'user_id'     => ['required', 'exists:users,id']
         ];
     }
 }

@@ -29,9 +29,13 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $filters = $request->only(['category_id', 'sort']);
-        $tasks = $this->taskService->listTasks($filters);
+        $filters['user_id'] = auth()->id();
+
+        $tasks = $this->taskService->getAllTasks($filters);
+
         return response()->json($tasks);
     }
+
 
     /**
      * @OA\Post(

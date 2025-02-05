@@ -44,8 +44,13 @@ class TaskService
      */
     public function createTask(array $data): Task
     {
+        if (!isset($data['user_id'])) {
+            $data['user_id'] = auth()->id();
+        }
+
         return $this->repository->create($data);
     }
+
 
     /**
      * Atualiza uma tarefa existente.

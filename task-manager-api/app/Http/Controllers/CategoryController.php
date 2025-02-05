@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
+use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = $this->categoryService->listCategories();
+        $categories = $this->categoryService->getAllCategories();
         return response()->json($categories);
     }
 
@@ -48,8 +49,11 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $category = $this->categoryService->createCategory($request->validated());
+
+
         return response()->json($category, 201);
     }
+
 
 
     /**
@@ -70,7 +74,7 @@ class CategoryController extends Controller
      */
     public function show(int $id)
     {
-        $category = $this->categoryService->findCategory($id);
+        $category = $this->categoryService->getCategory($id);
 
         if (!$category) {
             return response()->json(['message' => 'Categoria não encontrada'], 404);
@@ -102,22 +106,17 @@ class CategoryController extends Controller
      *     @OA\Response(response=404, description="Categoria não encontrada")
      * )
      */
-    public function update(CategoryRequest $request, int $id)
+    public function update(CategoryRequest $request, Category $category)
     {
-
-        $category = $this->categoryService->findCategory($id);
-        if (!$category) {
-            return response()->json(['message' => 'Categoria não encontrada'], 404);
-        }
-
         $updated = $this->categoryService->updateCategory($category, $request->validated());
 
         if ($updated) {
-            return response()->json($category);
+            return response()->json($category->refresh());
         }
 
         return response()->json(['message' => 'Erro ao atualizar a categoria'], 500);
     }
+
 
     /**
      * @OA\Delete(
@@ -135,14 +134,8 @@ class CategoryController extends Controller
      *     @OA\Response(response=404, description="Categoria não encontrada")
      * )
      */
-    public function destroy(int $id)
+    public function destroy(Category $category)
     {
-        $category = $this->categoryService->findCategory($id);
-
-        if (!$category) {
-            return response()->json(['message' => 'Categoria não encontrada'], 404);
-        }
-
         $deleted = $this->categoryService->deleteCategory($category);
 
         if ($deleted) {

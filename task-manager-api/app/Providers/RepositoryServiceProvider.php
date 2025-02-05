@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Contracts\CategoryRepositoryContract;
 use App\Contracts\TaskRepositoryContract;
-use App\Repositories\Category\CategoryRepository;
+use App\Repositories\CategoryRepository;
 use App\Repositories\TaskRepository;
 use Illuminate\Support\ServiceProvider;
 
